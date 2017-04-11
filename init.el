@@ -45,9 +45,12 @@
   '(
     color-theme-solarized ;; Solarized themes for Emacs
 
-    helm      ;; Helm is an Emacs incremental and narrowing framework
-    which-key ;; Display available keybindings in popup
-    evil      ;; Extensible Vi layer for Emacs.
+    helm            ;; Helm is an Emacs incremental and narrowing framework
+    which-key       ;; Display available keybindings in popup
+    evil            ;; Extensible Vi layer for Emacs.
+    projectile      ;; Project Interaction Library for Emacs
+    helm-projectile ;; Helm UI for Projectile
+    dashboard       ;; An extensible emacs dashboard
     )
   "List of packages used by FFE")
 
@@ -101,7 +104,27 @@
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 
 ;;
-;; Keybindings (general.el)
+;; Projectile
+;;
+
+(require 'projectile)
+
+(projectile-mode)
+
+(require 'helm-projectile)
+
+(helm-projectile-on)
+
+;;
+;; Dashboard
+;;
+
+(require 'dashboard)
+
+(dashboard-setup-startup-hook)
+
+;;
+;; Keybindings
 ;;
 
 ;; Essential
