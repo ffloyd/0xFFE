@@ -51,6 +51,12 @@
     projectile      ;; Project Interaction Library for Emacs
     helm-projectile ;; Helm UI for Projectile
     dashboard       ;; An extensible emacs dashboard
+    
+    company           ;; Modular in-buffer completion framework for Emacs
+    company-quickhelp ;; Documentation popup for Company
+
+    neotree       ;; A emacs tree plugin like NerdTree for Vim.
+    all-the-icons ;; A utility package to collect various Icon Fonts and propertize them within Emacs.
     )
   "List of packages used by FFE")
 
@@ -124,6 +130,30 @@
 (dashboard-setup-startup-hook)
 
 ;;
+;; Company and compnay-quickhelp
+;;
+
+(require 'company)
+(require 'company-quickhelp)
+
+(add-hook 'after-init-hook 'global-company-mode)
+(company-quickhelp-mode 1)
+
+;;
+;; NeoTree
+;;
+
+(require 'neotree)
+
+(global-set-key [f8] 'neotree-toggle)
+
+(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+
+(evil-define-key 'normal neotree-mode-map (kbd "TAB") 'neotree-enter)
+(evil-define-key 'normal neotree-mode-map (kbd "q") 'neotree-hide)
+(evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
+
+;;
 ;; Keybindings
 ;;
 
@@ -166,7 +196,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (evil which-key helm color-theme-solarized))))
+ '(package-selected-packages
+   (quote
+    (all-the-icons evil which-key helm color-theme-solarized))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
