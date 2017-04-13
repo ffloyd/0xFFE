@@ -1,192 +1,44 @@
 ;;
-;; Initialize MELPA stuff
+;; Initialize load paths
 ;;
 
-(require 'package)
+;; (package-initialize)
 
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/") t)
+(defvar ffe-dir (file-name-directory load-file-name)
+  "Root dir of FFE")
 
-(when (< emacs-major-version 24)
-  ;; For important compatibility libraries like cl-lib
-  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
+(defvar ffe-core-dir (expand-file-name "ffe" ffe-dir)
+  "FFE core files (functions for internal usage, basic EMACS non-UI tuning)")
 
-(package-initialize)
+(defvar ffe-features-dir (expand-file-name "features" ffe-dir)
+  "FFE files with UI and packages configuration, EMACS UI-tuning and so on")
 
-(when (not package-archive-contents)
-    (package-refresh-contents))
+(add-to-list 'load-path ffe-core-dir)
+(add-to-list 'load-path ffe-features-dir)
 
-;;
-;; Configure temp files to not pollute workdirs
-;;
-
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-
-(message "Deleting old backup files...")
-
-(let ((week (* 60 60 24 7))
-      (current (float-time (current-time))))
-  (dolist (file (directory-files temporary-file-directory t))
-    (when (and (backup-file-name-p file)
-               (> (- current (float-time (nth 5 (file-attributes file))))
-                  week))
-      (message "%s" file)
-      (delete-file file))))
+;; Always load newer bytecode
+(setq load-prefer-newer t)
 
 ;;
-;; Load or install packages
+;; Load FFE core configs
 ;;
 
-(defvar ffe-packages
-  '(
-    color-theme-solarized ;; Solarized themes for Emacs
-
-    helm            ;; Helm is an Emacs incremental and narrowing framework
-    which-key       ;; Display available keybindings in popup
-    evil            ;; Extensible Vi layer for Emacs.
-    projectile      ;; Project Interaction Library for Emacs
-    helm-projectile ;; Helm UI for Projectile
-    dashboard       ;; An extensible emacs dashboard
-    
-    company           ;; Modular in-buffer completion framework for Emacs
-    company-quickhelp ;; Documentation popup for Company
-
-    neotree       ;; A emacs tree plugin like NerdTree for Vim.
-    all-the-icons ;; A utility package to collect various Icon Fonts and propertize them within Emacs.
-    )
-  "List of packages used by FFE")
-
-(defun ffe-package-install (package)
-  "Install PACKAGE (if not installed)"
-  (unless (package-installed-p package)
-    (package-install package)))
-
-(mapc 'ffe-package-install ffe-packages)
+(require 'ffe-package)
+(require 'ffe-backups)
 
 ;;
-;; Solarized theme
+;; Load FFE features
 ;;
 
-(load-theme 'solarized t)
-
-;; Light theme for GUI, dark theme for Terminal
-(add-hook 'after-make-frame-functions
-          (lambda (frame)
-            (let ((mode (if (display-graphic-p frame) 'light 'dark)))
-              (set-frame-parameter frame 'background-mode mode)
-              (set-terminal-parameter frame 'background-mode mode))
-            (enable-theme 'solarized)))
-
-;;
-;; Evil
-;;
-
-(require 'evil)
-
-(evil-mode 1)
-
-;;
-;; which-key
-;;
-
-(require 'which-key)
-
-(which-key-mode)
-
-;;
-;; HELM
-;;
-
-(require 'helm-config)
-
-(helm-mode 1)
-(setq helm-mode-fuzzy-match t)
-
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-
-;;
-;; Projectile
-;;
-
-(require 'projectile)
-
-(projectile-mode)
-
-(require 'helm-projectile)
-
-(helm-projectile-on)
-
-;;
-;; Dashboard
-;;
-
-(require 'dashboard)
-
-(dashboard-setup-startup-hook)
-
-;;
-;; Company and compnay-quickhelp
-;;
-
-(require 'company)
-(require 'company-quickhelp)
-
-(add-hook 'after-init-hook 'global-company-mode)
-(company-quickhelp-mode 1)
-
-;;
-;; NeoTree
-;;
-
-(require 'neotree)
-
-(global-set-key [f8] 'neotree-toggle)
-
-(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
-
-(evil-define-key 'normal neotree-mode-map (kbd "TAB") 'neotree-enter)
-(evil-define-key 'normal neotree-mode-map (kbd "q") 'neotree-hide)
-(evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
-
-;;
-;; Keybindings
-;;
-
-;; Essential
-
-(define-prefix-command 'ffe-main-map)
-
-(define-key evil-motion-state-map (kbd "SPC") 'ffe-main-map)
-
-(define-key ffe-main-map (kbd "SPC") 'helm-M-x)
-
-;; Buffer manipulation
-
-(define-prefix-command 'ffe-buffers-map)
-
-(define-key ffe-main-map "b" 'ffe-buffers-map)
-
-(define-key ffe-buffers-map "n" 'evil-next-buffer)
-(define-key ffe-buffers-map "p" 'evil-prev-buffer)
-(define-key ffe-buffers-map "d" 'evil-delete-buffer)
-(define-key ffe-buffers-map "b" 'helm-mini)
-
-;; Windows manipulation
-
-(define-key ffe-main-map "w" 'evil-window-map)
-
-;; File manipulation
-
-(define-prefix-command 'ffe-files-map)
-
-(define-key ffe-main-map "f" 'ffe-files-map)
-
-(define-key ffe-files-map "f" 'helm-find-files)
+(require 'ffe-color-themes)
+(require 'ffe-evil)
+(require 'ffe-helm)
+(require 'ffe-projectile)
+(require 'ffe-which-key)
+(require 'ffe-neotree)
+(require 'ffe-company)
+(require 'ffe-dashboard)
+(require 'ffe-keybindings)
 
 ;;
 ;; Custom
