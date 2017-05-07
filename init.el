@@ -52,6 +52,7 @@
   (define-prefix-command 'ffe-apps-map)
   (define-prefix-command 'ffe-buffers-map)
   (define-prefix-command 'ffe-files-map)
+  (define-prefix-command 'ffe-search-map)
   (define-prefix-command 'ffe-toggles-map)
   (define-prefix-command 'ffe-ui-map)
 
@@ -72,6 +73,7 @@
 		      "a" '(ffe-apps-map :which-key "apps")
 		      "b" '(ffe-buffers-map :which-key "buffers")
 		      "f" '(ffe-files-map :which-key "files")
+		      "s" '(ffe-search-map :which-key "search")
 		      "t" '(ffe-toggles-map :which-key "toggles")
 		      "w" '(evil-window-map :which-key "windows")
 		      "U" '(ffe-ui-map :which-key "UI"))
@@ -128,16 +130,30 @@
 
 (use-package counsel
   :diminish (ivy-mode . "")
+  :bind (("C-s" . swiper)
+	 ("C-c C-r" . ivy-resume)
+	 ("<f6>" . ivy-resume)
+	 ("M-x" . counsel-M-x)
+	 ("C-x C-f" . counsel-find-file)
+	 ("<f1> f" . counsel-describe-function)
+	 ("<f1> v" . counsel-describe-variable)
+	 ("<f1> l" . counsel-find-library)
+	 ("<f2> i" . counsel-info-lookup-symbol)
+	 ("<f2> u" . counsel-unicode-char)
+	 ("C-c g" . counsel-git)
+	 ("C-c j" . counsel-git-grep)
+	 ("C-c k" . counsel-ag)
+	 ("C-x l" . counsel-locate))
   :general
-  ("C-x C-f" 'counsel-find-file)
-  ("M-x" 'counsel-M-x)
   (:keymaps 'ffe-spc-map
 	    "SPC" 'counsel-M-x
 	    "/" 'counsel-ag)
-  (:keymaps 'ffe-files-map
-	    "f" 'counsel-find-file)
   (:keymaps 'ffe-buffers-map
 	    "b" 'ivy-switch-buffer)
+  (:keymaps 'ffe-files-map
+	    "f" 'counsel-find-file)
+  (:keymaps 'ffe-search-map
+	    "s" 'swiper)
   :config
   (ivy-mode 1))
 
@@ -188,7 +204,7 @@
   (:keymaps 'ffe-files-map
 	    "t" 'neotree-toggle)
   :init
-  (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+  (setq neo-theme (if (display-graphic-p) 'icons 'arrow)) ; this will use all-the-icons as icons source
   (setq neo-smart-open t)
   )
 
