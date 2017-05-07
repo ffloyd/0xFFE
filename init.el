@@ -65,7 +65,8 @@
 		      "u" 'undo-tree-visualize)
 
   (general-define-key :keymaps 'ffe-ui-map
-		      "F" 'toggle-frame-fullscreen)
+		      "F" 'toggle-frame-fullscreen
+		      "f" 'toggle-frame-maximized)
 
   ;; Main SPC-keymap
   (define-prefix-command 'ffe-spc-map)
