@@ -52,6 +52,7 @@
   (define-prefix-command 'ffe-apps-map)
   (define-prefix-command 'ffe-buffers-map)
   (define-prefix-command 'ffe-files-map)
+  (define-prefix-command 'ffe-toggles-map)
   (define-prefix-command 'ffe-ui-map)
 
   (general-define-key :keymaps 'ffe-buffers-map
@@ -71,6 +72,7 @@
 		      "a" '(ffe-apps-map :which-key "apps")
 		      "b" '(ffe-buffers-map :which-key "buffers")
 		      "f" '(ffe-files-map :which-key "files")
+		      "t" '(ffe-toggles-map :which-key "toggles")
 		      "w" '(evil-window-map :which-key "windows")
 		      "U" '(ffe-ui-map :which-key "UI"))
 
@@ -199,6 +201,18 @@
   :pin org)
 
 ;;
+;; Line numbers control
+;;
+
+(general-define-key :keymaps 'ffe-toggles-map
+		    "n" 'linum-mode)
+
+(use-package linum-relative
+  :general
+  (:keymaps 'ffe-toggles-map
+	    "N" 'linum-relative-toggle))
+
+;;
 ;; Custom
 ;;
 
@@ -209,7 +223,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (all-the-icons projectile company which-key color-theme-solarized general evil use-package))))
+    (linum-relative all-the-icons projectile company which-key color-theme-solarized general evil use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
