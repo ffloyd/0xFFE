@@ -152,7 +152,8 @@
   (:keymaps 'ffe-buffers-map
 	    "b" 'ivy-switch-buffer)
   (:keymaps 'ffe-files-map
-	    "f" 'counsel-find-file)
+	    "f" 'counsel-find-file
+	    "r" 'counsel-recentf)
   (:keymaps 'ffe-search-map
 	    "s" 'swiper)
   :config
