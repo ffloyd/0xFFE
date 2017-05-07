@@ -86,15 +86,23 @@
 
 (use-package color-theme-solarized
   :no-require t
-  :config
-  (load-theme 'solarized t)
+  :init
+  (setq-default frame-background-mode 'dark)
+  (add-hook 'window-setup-hook
+	    (lambda ()
+	      (load-theme 'solarized t))))
 
-  (add-hook 'after-make-frame-functions
-          (lambda (frame)
-            (let ((mode (if (display-graphic-p frame) 'light 'dark)))
-              (set-frame-parameter frame 'background-mode mode)
-              (set-terminal-parameter frame 'background-mode mode))
-            (enable-theme 'solarized))))
+(defun ffe/switch-theme-pallete ()
+  "Switch between light and dark solarized theme variants"
+  (interactive)
+  (let ((next-mode (if (eq frame-background-mode 'dark)
+		       'light 'dark)))
+    (setq frame-background-mode next-mode)
+    (load-theme 'solarized t)
+    ))
+
+(general-define-key :keymaps 'ffe-ui-map
+		    "T" 'ffe/switch-theme-pallete)
 
 ;;
 ;; Treat undo history as a tree
