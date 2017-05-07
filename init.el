@@ -141,21 +141,23 @@
   (add-hook 'after-init-hook 'global-company-mode))
 
 ;;
-;; Project Interaction Library for Emacs
-;;
-
-(use-package projectile
-  :diminish (projectile-mode . "")
-  :config
-  (projectile-mode))
-
-;;
 ;; An extensible emacs dashboard
 ;;
 
 (use-package dashboard
   :config
   (dashboard-setup-startup-hook))
+
+;;
+;; Project Interaction Library for Emacs
+;;
+
+(use-package projectile
+  :diminish (projectile-mode . "")
+  :init
+  (setq projectile-completion-system 'ivy)
+  :config
+  (projectile-mode))
 
 ;;
 ;; NeoTree, Dired & icons
@@ -168,6 +170,7 @@
 
 (use-package neotree
   :general
+  ;; fix neotree behaviour in Evil mode
   (general-evil-define-key 'normal neotree-mode-map
     "RET" 'neotree-enter
     "TAB" 'neotree-enter
@@ -177,7 +180,6 @@
   :init
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
   (setq neo-smart-open t)
-  (setq projectile-switch-project-action 'neotree-projectile-action)
   )
 
 ;;
