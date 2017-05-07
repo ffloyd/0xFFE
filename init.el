@@ -52,6 +52,7 @@
   (define-prefix-command 'ffe-apps-map)
   (define-prefix-command 'ffe-buffers-map)
   (define-prefix-command 'ffe-files-map)
+  (define-prefix-command 'ffe-project-map)
   (define-prefix-command 'ffe-search-map)
   (define-prefix-command 'ffe-toggles-map)
   (define-prefix-command 'ffe-ui-map)
@@ -74,6 +75,7 @@
 		      "a" '(ffe-apps-map :which-key "apps")
 		      "b" '(ffe-buffers-map :which-key "buffers")
 		      "f" '(ffe-files-map :which-key "files")
+		      "p" '(ffe-project-map :which-key "project")
 		      "s" '(ffe-search-map :which-key "search")
 		      "t" '(ffe-toggles-map :which-key "toggles")
 		      "w" '(evil-window-map :which-key "windows")
@@ -182,6 +184,10 @@
 
 (use-package projectile
   :diminish (projectile-mode . "")
+  :general
+  (:keymaps 'ffe-project-map
+	    "f" 'projectile-find-file
+	    "F" 'projectile-find-file-in-known-projects)
   :init
   (setq projectile-completion-system 'ivy)
   :config
