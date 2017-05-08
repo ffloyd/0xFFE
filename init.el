@@ -60,7 +60,8 @@
 
     (general-define-key :keymaps 'ffe-buffers-map
 			"n" 'next-buffer
-			"p" 'previous-buffer)
+			"p" 'previous-buffer
+			"d" 'kill-buffer)
 
     (general-define-key :keymaps 'ffe-apps-map
 			"d" 'dired
@@ -218,12 +219,35 @@
     (setq neo-smart-open t)))
 
 ;;
+;; Graphviz files editing
+
+(use-package graphviz-dot-mode
+  :init
+  (progn
+    (define-prefix-command 'ffe-graphviz-dot-mode-map)
+    (setq graphviz-dot-auto-indent-on-braces  t)
+    (setq graphviz-dot-auto-indent-on-newline t)
+    (setq graphviz-dot-auto-indent-on-semi    t))
+  :bind
+  (:map ffe-graphviz-dot-mode-map
+	("p" . graphviz-dot-preview)
+	("c" . compile))
+  :general
+  (general-evil-define-key 'normal graphviz-dot-mode-map
+    "SPC m" '(ffe-graphviz-dot-mode-map :which-key "graphviz")))
+
+;;
 ;; Latest Org-mode from correct repo
 ;;
 
 (use-package org
   :ensure org-plus-contrib
   :pin org)
+
+;; Graphviz dot rendering inside org
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((dot . t)))
 
 ;;
 ;; Line numbers control
@@ -265,7 +289,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (rainbow-delimeters evil-lispy linum-relative all-the-icons projectile company which-key color-theme-solarized general evil use-package))))
+    (graphviz-dot-mode dot-mode rainbow-delimeters evil-lispy parinfer linum-relative all-the-icons projectile company which-key color-theme-solarized general evil use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
