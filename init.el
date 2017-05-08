@@ -215,7 +215,8 @@
       "t" 'neotree-toggle)
   :init
   (progn
-    (setq neo-theme (if (display-graphic-p) 'icons 'arrow)) ; this will use all-the-icons as icons source
+    (setq neo-theme (if (display-graphic-p) 'icons 'arrow))  ;; this will use all-the-icons as icons source
+    (setq neo-vc-integration '(face))
     (setq neo-smart-open t)))
 
 ;;
