@@ -13,15 +13,15 @@
 
 ;; the following lines tell emacs where on the internet to look up
 ;; for new packages.
-(setq package-archives '(("org"       . "http://orgmode.org/elpa/")
-                         ("melpa"     . "https://melpa.org/packages/")))
+(setq package-archives '(("org"   . "http://orgmode.org/elpa/")
+                         ("melpa" . "https://melpa.org/packages/")))
 
 (package-initialize)
 
 ;; Bootstrap `use-package'
-(unless (package-installed-p 'use-package) ; unless it is already installed
-  (package-refresh-contents)               ; updage packages archive
-  (package-install 'use-package))          ; and install the most recent version of use-package
+(unless (package-installed-p 'use-package) ;; unless it is already installed
+  (package-refresh-contents)               ;; updage packages archive
+  (package-install 'use-package))          ;; and install the most recent version of use-package
 
 ;; use-package initialization
 (eval-when-compile
@@ -46,43 +46,45 @@
 
 (use-package general
   :config
-  (general-evil-setup)
+  (progn
+    (general-evil-setup)
 
-  ;; Define main keymaps
-  (define-prefix-command 'ffe-apps-map)
-  (define-prefix-command 'ffe-buffers-map)
-  (define-prefix-command 'ffe-files-map)
-  (define-prefix-command 'ffe-project-map)
-  (define-prefix-command 'ffe-search-map)
-  (define-prefix-command 'ffe-toggles-map)
-  (define-prefix-command 'ffe-ui-map)
+    ;; Define main keymaps
+    (define-prefix-command 'ffe-apps-map)
+    (define-prefix-command 'ffe-buffers-map)
+    (define-prefix-command 'ffe-files-map)
+    (define-prefix-command 'ffe-project-map)
+    (define-prefix-command 'ffe-search-map)
+    (define-prefix-command 'ffe-toggles-map)
+    (define-prefix-command 'ffe-ui-map)
 
-  (general-define-key :keymaps 'ffe-buffers-map
-          "n" 'next-buffer
-          "p" 'previous-buffer)
+    (general-define-key :keymaps 'ffe-buffers-map
+			"n" 'next-buffer
+			"p" 'previous-buffer)
 
-  (general-define-key :keymaps 'ffe-apps-map
-          "d" 'dired
-          "u" 'undo-tree-visualize)
+    (general-define-key :keymaps 'ffe-apps-map
+			"d" 'dired
+			"u" 'undo-tree-visualize)
 
-  (general-define-key :keymaps 'ffe-ui-map
-          "F" 'toggle-frame-fullscreen
-          "f" 'toggle-frame-maximized)
+    (general-define-key :keymaps 'ffe-ui-map
+			"F" 'toggle-frame-fullscreen
+			"f" 'toggle-frame-maximized)
 
-  ;; Main SPC-keymap
-  (define-prefix-command 'ffe-spc-map)
-  (general-define-key :keymaps 'ffe-spc-map
-          "a" '(ffe-apps-map :which-key "apps")
-          "b" '(ffe-buffers-map :which-key "buffers")
-          "f" '(ffe-files-map :which-key "files")
-          "p" '(ffe-project-map :which-key "project")
-          "s" '(ffe-search-map :which-key "search")
-          "t" '(ffe-toggles-map :which-key "toggles")
-          "w" '(evil-window-map :which-key "windows")
-          "U" '(ffe-ui-map :which-key "UI"))
+    ;; Main SPC-keymap
+    (define-prefix-command 'ffe-spc-map)
 
-  ;; now attach SPC-driven global keymap
-  (general-mmap "SPC" 'ffe-spc-map))
+    (general-define-key :keymaps 'ffe-spc-map
+			"a" '(ffe-apps-map    :which-key "apps")
+			"b" '(ffe-buffers-map :which-key "buffers")
+			"f" '(ffe-files-map   :which-key "files")
+			"p" '(ffe-project-map :which-key "project")
+			"s" '(ffe-search-map  :which-key "search")
+			"t" '(ffe-toggles-map :which-key "toggles")
+			"w" '(evil-window-map :which-key "windows")
+			"U" '(ffe-ui-map      :which-key "UI"))
+
+    ;; now attach SPC-driven global keymap
+    (general-mmap "SPC" 'ffe-spc-map)))
 
 ;;
 ;; Color themes (solarized)
@@ -93,22 +95,21 @@
 (use-package color-theme-solarized
   :no-require t
   :init
-  (setq-default frame-background-mode 'dark)
-  (add-hook 'window-setup-hook
-      (lambda ()
-        (load-theme 'solarized t))))
+  (progn
+    (setq-default frame-background-mode 'dark)
+    (add-hook 'window-setup-hook
+	      (lambda ()
+		(load-theme 'solarized t)))))
 
 (defun ffe/switch-theme-pallete ()
   "Switch between light and dark solarized theme variants"
   (interactive)
-  (let ((next-mode (if (eq frame-background-mode 'dark))
-           'light 'dark))
+  (let ((next-mode (if (eq frame-background-mode 'dark)) 'light 'dark))
     (setq frame-background-mode next-mode)
     (load-theme 'solarized t)))
     
-
 (general-define-key :keymaps 'ffe-ui-map
-        "T" 'ffe/switch-theme-pallete)
+		    "T" 'ffe/switch-theme-pallete)
 
 ;;
 ;; Treat undo history as a tree
@@ -132,31 +133,31 @@
 
 (use-package counsel
   :diminish (ivy-mode . "")
-  :bind (("C-s" . swiper))
-   ("C-c C-r" . ivy-resume)
-   ("<f6>" . ivy-resume)
-   ("M-x" . counsel-M-x)
-   ("C-x C-f" . counsel-find-file)
-   ("<f1> f" . counsel-describe-function)
-   ("<f1> v" . counsel-describe-variable)
-   ("<f1> l" . counsel-find-library)
-   ("<f2> i" . counsel-info-lookup-symbol)
-   ("<f2> u" . counsel-unicode-char)
-   ("C-c g" . counsel-git)
-   ("C-c j" . counsel-git-grep)
-   ("C-c k" . counsel-ag)
-   ("C-x l" . counsel-locate)
+  :bind (("C-s"     . swiper)
+	 ("C-c C-r" . ivy-resume)
+	 ("<f6>"    . ivy-resume)
+	 ("M-x"     . counsel-M-x)
+	 ("C-x C-f" . counsel-find-file)
+	 ("<f1> f"  . counsel-describe-function)
+	 ("<f1> l"  . counsel-find-library)
+	 ("<f1> v"  . counsel-describe-variable)
+	 ("<f2> i"  . counsel-info-lookup-symbol)
+	 ("<f2> u"  . counsel-unicode-char)
+	 ("C-c g"   . counsel-git)
+	 ("C-c j"   . counsel-git-grep)
+	 ("C-c k"   . counsel-ag)
+	 ("C-x l"   . counsel-locate))
   :general
   (:keymaps 'ffe-spc-map
-      "SPC" 'counsel-M-x
-      "/" 'counsel-ag)
+	    "SPC" 'counsel-M-x
+	    "/"   'counsel-ag)
   (:keymaps 'ffe-buffers-map
-      "b" 'ivy-switch-buffer)
+	    "b"   'ivy-switch-buffer)
   (:keymaps 'ffe-files-map
-      "f" 'counsel-find-file
-      "r" 'counsel-recentf)
+	    "f"   'counsel-find-file
+	    "r"   'counsel-recentf)
   (:keymaps 'ffe-search-map
-      "s" 'swiper)
+	    "s"   'swiper)
   :config
   (ivy-mode 1))
 
@@ -197,6 +198,7 @@
 ;;
 
 (use-package all-the-icons)
+
 (use-package all-the-icons-dired
   :config
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
@@ -207,13 +209,13 @@
   (general-evil-define-key 'normal neotree-mode-map
     "RET" 'neotree-enter
     "TAB" 'neotree-enter
-    "q" 'neotree-hide)
+    "q"   'neotree-hide)
   (:keymaps 'ffe-files-map
       "t" 'neotree-toggle)
   :init
-  (setq neo-theme (if (display-graphic-p) 'icons 'arrow)) ; this will use all-the-icons as icons source
-  (setq neo-smart-open t))
-  
+  (progn
+    (setq neo-theme (if (display-graphic-p) 'icons 'arrow)) ; this will use all-the-icons as icons source
+    (setq neo-smart-open t)))
 
 ;;
 ;; Latest Org-mode from correct repo
@@ -227,8 +229,11 @@
 ;; Line numbers control
 ;;
 
-(general-define-key :keymaps 'ffe-toggles-map
-        "n" 'linum-mode)
+(use-package linum
+  :ensure f
+  :general
+  (:keymaps 'ffe-toggles-map
+	    "n" 'linum-mode))
 
 (use-package linum-relative
   :general
