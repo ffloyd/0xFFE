@@ -6,6 +6,13 @@
 (setq package-enable-at-startup nil) ; tells emacs not to load any packages before starting up
 
 ;;
+;; 0xFFE variables
+;;
+
+(defvar ffe-dir (file-name-directory load-file-name)
+  "Home directory of FFE")
+
+;;
 ;; Package initialization
 ;;
 
@@ -296,32 +303,5 @@
 ;; Custom
 ;;
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (graphviz-dot-mode dot-mode rainbow-delimeters evil-lispy parinfer linum-relative all-the-icons projectile company which-key color-theme-solarized general evil use-package))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- 
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- 
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- 
+(setq custom-file (expand-file-name "custom.el" ffe-dir))
+(load custom-file t)
