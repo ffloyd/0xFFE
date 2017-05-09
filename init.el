@@ -234,6 +234,14 @@
   (add-hook 'after-init-hook 'global-company-mode))
 
 ;;
+;; Modern Emacs package manager
+;; 
+
+(use-package paradox
+  :general
+  (:keymaps 'ffe-apps-map
+	    "p" 'paradox-list-packages))
+
 ;; An extensible emacs dashboard
 ;;
 
