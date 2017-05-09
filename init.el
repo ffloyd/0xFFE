@@ -18,6 +18,23 @@
 
 (defvar ffe-dir (file-name-directory load-file-name)
   "Home directory of FFE")
+(defvar ffe-backups-dir (expand-file-name "backups/" ffe-dir)
+  "Directory for backups")
+(defvar ffe-auto-save-dir (expand-file-name "auto-save-list/" ffe-dir)
+  "Directory for autosaves")
+
+;;
+;; Backups config
+;;
+
+(setq backup-directory-alist         `((".*" . ,ffe-backups-dir))
+      auto-save-file-name-transforms `((".*" ,ffe-auto-save-dir t))
+      backup-by-copying    t
+      delete-old-versions  t
+      kept-new-versions    12
+      kept-old-versions    6
+      version-control      t
+      vc-make-backup-files t)
 
 ;;
 ;; Package initialization
@@ -108,7 +125,7 @@
 			"t" 'ffe-toggles-map
 			"w" 'evil-window-map
 			"U" 'ffe-ui-map)
-    
+
     (which-key-add-key-based-replacements
       "SPC a" "app"
       "SPC b" "buffer"
