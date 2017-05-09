@@ -166,7 +166,7 @@
 (defun ffe/switch-theme-pallete ()
   "Switch between light and dark solarized theme variants"
   (interactive)
-  (let ((next-mode (if (eq frame-background-mode 'dark)) 'light 'dark))
+  (let ((next-mode (if (eq frame-background-mode 'dark) 'light 'dark)))
     (setq frame-background-mode next-mode)
     (load-theme 'solarized t)))
     
