@@ -52,7 +52,8 @@
 
 ;; the following lines tell emacs where on the internet to look up
 ;; for new packages.
-(setq package-archives '(("org"   . "http://orgmode.org/elpa/")
+(setq package-archives '(("gnu"   . "https://elpa.gnu.org/packages/")
+			 ("org"   . "http://orgmode.org/elpa/")
                          ("melpa" . "https://melpa.org/packages/")))
 
 (package-initialize)
@@ -174,6 +175,15 @@
 		    "T" 'ffe/switch-theme-pallete)
 
 ;;
+;; Minimap like sublime one
+;;
+
+(use-package minimap
+  :general
+  (:keymaps 'ffe-toggles-map
+	    "m" 'minimap-mode))
+
+;; 
 ;; Treat undo history as a tree
 ;;
 
