@@ -5,6 +5,12 @@
 (setq gc-cons-threshold 10000000)
 (setq package-enable-at-startup nil) ; tells emacs not to load any packages before starting up
 
+(setq create-lockfiles nil)
+
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(horizontal-scroll-bar-mode -1)
+
 ;;
 ;; Personal info
 ;;
