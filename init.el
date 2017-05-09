@@ -6,6 +6,13 @@
 (setq package-enable-at-startup nil) ; tells emacs not to load any packages before starting up
 
 ;;
+;; Personal info
+;;
+
+(setq user-full-name    "Roman Kolesnev")
+(setq user-mail-address "rvkolesnev@gmail.com")
+
+;;
 ;; 0xFFE variables
 ;;
 
