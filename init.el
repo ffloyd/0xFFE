@@ -41,6 +41,15 @@
   (evil-mode 1))
 
 ;;
+;; Emacs package that displays available keybindings in popup
+;;
+
+(use-package which-key
+  :diminish (which-key-mode . "")
+  :config
+  (which-key-mode))
+
+;;
 ;; General - Convenience wrappers for keybindings.
 ;;
 
@@ -53,6 +62,7 @@
     (define-prefix-command 'ffe-apps-map)
     (define-prefix-command 'ffe-buffers-map)
     (define-prefix-command 'ffe-files-map)
+    (define-prefix-command 'ffe-mode-map)
     (define-prefix-command 'ffe-project-map)
     (define-prefix-command 'ffe-search-map)
     (define-prefix-command 'ffe-toggles-map)
@@ -75,14 +85,26 @@
     (define-prefix-command 'ffe-spc-map)
 
     (general-define-key :keymaps 'ffe-spc-map
-			"a" '(ffe-apps-map    :which-key "apps")
-			"b" '(ffe-buffers-map :which-key "buffers")
-			"f" '(ffe-files-map   :which-key "files")
-			"p" '(ffe-project-map :which-key "project")
-			"s" '(ffe-search-map  :which-key "search")
-			"t" '(ffe-toggles-map :which-key "toggles")
-			"w" '(evil-window-map :which-key "windows")
-			"U" '(ffe-ui-map      :which-key "UI"))
+			"a" 'ffe-apps-map
+			"b" 'ffe-buffers-map
+			"f" 'ffe-files-map
+			"m" 'ffe-mode-map
+			"p" 'ffe-project-map
+			"s" 'ffe-search-map
+			"t" 'ffe-toggles-map
+			"w" 'evil-window-map
+			"U" 'ffe-ui-map)
+    
+    (which-key-add-key-based-replacements
+      "SPC a" "app"
+      "SPC b" "buffer"
+      "SPC f" "file"
+      "SPC m" "mode"
+      "SPC p" "project"
+      "SPC s" "search"
+      "SPC t" "toggle"
+      "SPC w" "window"
+      "SPC U" "UI")
 
     ;; now attach SPC-driven global keymap
     (general-mmap "SPC" 'ffe-spc-map)))
@@ -118,15 +140,6 @@
 
 (use-package undo-tree
   :diminish (undo-tree-mode . ""))
-
-;;
-;; Emacs package that displays available keybindings in popup
-;;
-
-(use-package which-key
-  :diminish (which-key-mode . "")
-  :config
-  (which-key-mode))
 
 ;;
 ;; Abo-abo stuff (ivy, consuel, swiper)
@@ -223,19 +236,16 @@
 ;; Graphviz files editing
 
 (use-package graphviz-dot-mode
+  :general
+  (general-mmap :keymaps 'graphviz-dot-mode-map
+		:prefix "SPC m"
+		"c" 'compile
+		"p" 'graphviz-dot-preview)
   :init
   (progn
-    (define-prefix-command 'ffe-graphviz-dot-mode-map)
     (setq graphviz-dot-auto-indent-on-braces  t)
     (setq graphviz-dot-auto-indent-on-newline t)
-    (setq graphviz-dot-auto-indent-on-semi    t))
-  :bind
-  (:map ffe-graphviz-dot-mode-map
-	("p" . graphviz-dot-preview)
-	("c" . compile))
-  :general
-  (general-evil-define-key 'normal graphviz-dot-mode-map
-    "SPC m" '(ffe-graphviz-dot-mode-map :which-key "graphviz")))
+    (setq graphviz-dot-auto-indent-on-semi    t)))
 
 ;;
 ;; Latest Org-mode from correct repo
@@ -243,7 +253,10 @@
 
 (use-package org
   :ensure org-plus-contrib
-  :pin org)
+  :pin org
+  :init
+  (progn
+    (setq org-startup-truncated nil)))
 
 ;; Graphviz dot rendering inside org
 (org-babel-do-load-languages
