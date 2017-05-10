@@ -258,8 +258,8 @@
   :diminish (projectile-mode . "")
   :general
   (:keymaps 'ffe-project-map
-      "f" 'projectile-find-file
-      "F" 'projectile-find-file-in-known-projects)
+	    "f" 'projectile-find-file
+	    "F" 'projectile-find-file-in-known-projects)
   :init
   (setq projectile-completion-system 'ivy)
   :config
@@ -283,7 +283,9 @@
     "TAB" 'neotree-enter
     "q"   'neotree-hide)
   (:keymaps 'ffe-files-map
-      "t" 'neotree-toggle)
+	    "t" 'neotree-toggle)
+  (:keymaps 'ffe-project-map
+	    "t" 'neotree-projectile-action)
   :init
   (progn
     (setq neo-theme (if (display-graphic-p) 'icons 'arrow))  ;; this will use all-the-icons as icons source
