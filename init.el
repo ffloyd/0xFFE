@@ -370,6 +370,26 @@
   :init (setq markdown-command "multimarkdown"))
 
 ;;
+;; Ruby support
+;;
+
+(use-package enh-ruby-mode
+  :config
+  (remove-hook 'enh-ruby-mode-hook 'erm-define-faces)
+  (add-to-list 'auto-mode-alist
+	       '("\\(?:\\.rb\\|ru\\|rake\\|thor\\|jbuilder\\|gemspec\\|podspec\\|/\\(?:Gem\\|Rake\\|Cap\\|Thor\\|Vagrant\\|Guard\\|Pod\\)file\\)\\'" . enh-ruby-mode)))
+
+(use-package rubocop
+  :config
+  (add-hook 'enh-ruby-mode-hook #'rubocop-mode))
+
+(use-package rbenv
+  :config
+  (add-hook 'enh-ruby-mode-hook #'global-rbenv-mode))
+
+(use-package rspec-mode)
+
+;;
 ;; Custom
 ;;
 
