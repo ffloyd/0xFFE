@@ -11,7 +11,7 @@
 (scroll-bar-mode -1)
 (horizontal-scroll-bar-mode -1)
 
-(set-default-font "-*-Source Code Pro-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1")
+(set-frame-font "Source Code Pro 12" nil t)
 
 ;;
 ;; Personal info
@@ -25,11 +25,11 @@
 ;;
 
 (defvar ffe-dir (file-name-directory load-file-name)
-  "Home directory of FFE")
+  "Home directory of FFE.")
 (defvar ffe-backups-dir (expand-file-name "backups/" ffe-dir)
-  "Directory for backups")
+  "Directory for backups.")
 (defvar ffe-auto-save-dir (expand-file-name "auto-save-list/" ffe-dir)
-  "Directory for autosaves")
+  "Directory for autosaves.")
 
 ;;
 ;; Backups config
@@ -166,7 +166,7 @@
  		(load-theme 'solarized t)))))
 
 (defun ffe/switch-theme-pallete ()
-  "Switch between light and dark solarized theme variants"
+  "Switch between light and dark solarized theme variants."
   (interactive)
   (let ((next-mode (if (eq frame-background-mode 'dark) 'light 'dark)))
     (setq frame-background-mode next-mode)
