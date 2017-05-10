@@ -156,13 +156,14 @@
 (use-package color-theme :ensure f)
 
 (use-package color-theme-solarized
-  :no-require t
-  :init
-  (progn
-    (setq-default frame-background-mode 'dark)
-    (add-hook 'window-setup-hook
-	      (lambda ()
-		(load-theme 'solarized t)))))
+   :no-require t
+   :init
+   (progn
+     (setq-default frame-background-mode 'dark
+ 		  solarized-broken-srgb t)
+     (add-hook 'window-setup-hook
+ 	      (lambda ()
+ 		(load-theme 'solarized t)))))
 
 (defun ffe/switch-theme-pallete ()
   "Switch between light and dark solarized theme variants"
