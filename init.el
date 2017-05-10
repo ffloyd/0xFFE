@@ -370,7 +370,7 @@
   :init (setq markdown-command "multimarkdown"))
 
 ;;
-;; Ruby support
+;; Ruby/Rails support
 ;;
 
 (use-package enh-ruby-mode
@@ -388,6 +388,8 @@
   (add-hook 'enh-ruby-mode-hook #'global-rbenv-mode))
 
 (use-package rspec-mode)
+
+(use-package slim-mode)
 
 ;;
 ;; Custom
