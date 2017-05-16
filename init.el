@@ -323,6 +323,13 @@
  'org-babel-load-languages
  '((dot . t)))
 
+;; Well-looking bullets
+
+(use-package org-bullets
+  :config
+  (add-hook 'org-mode-hook (lambda ()
+			     (org-bullets-mode 1))))
+
 ;;
 ;; Line numbers control
 ;;
