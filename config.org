@@ -1,0 +1,255 @@
+#+TODO: TODO(t) IN_PROGRESS(i) | DONE(d)
+
+* 0xFFE - Ffloyd's Furious Editor [0/11]
+
+  0xFFE is a my personal Emacs configuration. This file is an org-mode document which regenerates init.el on save using org-babel. So, If you will use this config you should edit only this org-file and left init.el untouched. Otherwise you may accidently overwrite you changes in init.el when editing init.org.
+
+** TODO Conventions [0/4]
+
+   - [ ] Function naming conventions
+   - [ ] Variable naming conventions
+   - [ ] General GUI/UX conventions
+   - [ ] General keybinding conventions
+
+** Personal info [0/0]
+
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (setq user-full-name    "Roman Kolesnev")
+      (setq user-mail-address "rvkolesnev@gmail.com")
+    #+END_SRC
+    
+** 0xFFE variables [0/0]
+
+*** Directory structure
+
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (defvar ffe-dir (file-name-directory load-file-name)
+	"Home directory of FFE.")
+      (defvar ffe-backups-dir (expand-file-name "backups/" ffe-dir)
+	"Directory for backups.")
+      (defvar ffe-auto-save-dir (expand-file-name "auto-save-list/" ffe-dir)
+	"Directory for autosaves.")
+      (defvar ffe-custom-file (expand-file-name "custom.el" ffe-dir)
+	"File for custom.el sideffects.")
+    #+END_SRC
+
+** TODO Initial configuration [0/2]
+
+   This section contains only "global" Emacs behaviour tuning. Each configs in this section should meet all following rules:
+
+   - be independent of packages and its variables, settings (excluding emacs internal ones)
+   - be independent of specific mode
+   - should not define keybindings, modes, etc.
+  
+*** GC tuning
+    
+    Good blogpost about emacs GC tuning: http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
+
+    Following ideas from this post it's harmful to set high value for `gc-cons-threshold` setting. But it may be useful to temporary increase GC limit on memory intesive features. So, we define helper functions for such cases. 
+
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (defvar ffe-default-gc-cons-threshold gc-cons-threshold
+	"Default value for `gc-cons-threshold`.")
+      (defvar ffe-increased-gc-cons-therhold 2000000000
+	"Increased value for `gc-cons-threshold`.
+	Useful for memory intensive tasks but some lags may appear. Default value is 2GB which is acceptable for most common systems.")
+
+      (defun ffe--gc-increase-threshold ()
+	"Increase `gc-cons-threshold` value. Useful for memory intensive tasks but some lags may appear."
+	(setq gc-cons-threshold ffe-increased-gc-cons-therhold))
+
+      (defun ffe--gc-restore-threshold ()
+	"Restore `gc-cons-threshold` to default value."
+	(setq gc-cons-threshold ffe-default-gc-cons-threshold))
+    #+END_SRC
+    
+    And we can enable increased gc threshold there, at the very beginning of config, and restore it to default value after initialization will be done.
+    
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (ffe--gc-increase-threshold)
+
+      (add-hook 'after-init-hook
+		(lambda ()
+		  (ffe--gc-restore-threshold)))
+    #+END_SRC
+
+*** IN_PROGRESS GUI and basic UI tuning [0/1]
+
+    - [ ] Smooth (by 1 line) scrolling
+    
+    Disable unnecessary GUI components:
+
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (tooltip-mode               -1) 
+      (menu-bar-mode              -1)
+      (tool-bar-mode              -1)
+      (scroll-bar-mode            -1)
+      (horizontal-scroll-bar-mode -1)
+    #+END_SRC
+
+    No graphics dialog boxes and shorter messages for confirmation dialogs:
+
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (setq use-dialog-box nil)
+      (defalias 'yes-or-no-p 'y-or-n-p)
+    #+END_SRC
+    
+    Branded title:
+
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (setq frame-title-format "0xFFE: %b %+")
+    #+END_SRC
+    
+    Good font for programming:
+    
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (set-frame-font "Source Code Pro 12" nil t)
+    #+END_SRC
+    
+    More convinient window size at startup:
+    
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (when (window-system)
+	(set-frame-size (selected-frame) 150 50))
+    #+END_SRC
+
+*** Backups and workdir pollution
+
+    Don't pollute workdir with lockfiles. Interlocking (https://www.gnu.org/software/emacs/manual/html_node/emacs/Interlocking.html) is a good feature, but clean workdir is more important for me.
+
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (setq create-lockfiles nil)
+    #+END_SRC
+    
+    Save backup and autosave files in separate dirs:
+    
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (setq backup-directory-alist         `((".*" . ,ffe-backups-dir))
+	    auto-save-file-name-transforms `((".*" ,ffe-auto-save-dir t)))
+    #+END_SRC
+    
+    Copying strategy for backups is more intuitive and transparent:
+
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (setq backup-by-copying t)
+    #+END_SRC
+    
+    Numbered backups (https://www.gnu.org/software/emacs/manual/html_node/elisp/Numbered-Backups.html) with relatively huge versions count and silent deletion of old versions (maximum 8 backups of file).
+    
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (setq version-control   t
+	    kept-new-versions 4
+	    kept-old-versions 4
+	    delete-old-versions t)
+    #+END_SRC
+
+    Use backups even for files under version control (https://www.gnu.org/software/emacs/manual/html_node/emacs/General-VC-Options.html). Disk space is cheap and text files is small.
+    
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (setq vc-make-backup-files t)
+    #+END_SRC
+    
+*** Custom.el
+
+   Store customs in separate file and load it after init.el will be loaded. 
+
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (setq custom-file ffe-custom-file)
+
+      (add-hook 'after-init-hook
+		(lambda ()
+		  (load custom-file)))
+    #+END_SRC
+    
+*** TODO Package control [0/3]
+
+    - [ ] disable loading packages at startup
+    - [ ] configure package archives
+    - [ ] configure use-package
+
+** TODO Color theme [0/4]
+
+   - [ ] load and activate color-theme-solarized package
+   - [ ] google about default highlight settings outside theme colors (only emacs embedded)
+   - [ ] google about solarized structure and color generation rules
+   - [ ] dark/light mode switching
+
+** TODO All the icons
+** TODO Evil, which-key and general [0/5]
+
+   - [ ] basic Evil setup
+   - [ ] basic which-key setup
+   - [ ] basic General evil setup
+   - [ ] Define global keymaps
+   - [ ] Add which-key comments
+
+** TODO Editing essentials [0/4]
+
+*** TODO Line numbers [0/2]
+
+    - [ ] Toggling line numbers mode (linum)
+    - [ ] Toggling realtive mode of line numbers (linum-relative)
+
+*** TODO Flycheck
+
+*** TODO Minimap
+
+    - [ ] minimap lazy installation
+
+*** TODO Autocomplete
+
+** TODO Project management and exploration [0/2]
+
+*** TODO Ivy, Counsel, Swiper basic setup [0/2]
+
+    - [ ] Activation
+    - [ ] Override emacs default tools
+
+*** TODO Projectile basic setup
+
+** TODO Org [0/3]
+
+*** TODO Install newer version [0/2]
+
+    - [ ] Guaranteed installation of org-plus-contrib from 'org' package source
+    - [ ] elc-files fix with links to the related issues
+   
+*** TODO Babel [0/1]
+
+    - [ ] dot support
+
+*** TODO org-bullets
+** TODO Languages [0/5]
+
+*** TODO Emacs Lisp [0/2]
+
+    - [ ] configure evil-lispy
+    - [ ] configure rainbow-delimeters
+
+*** TODO Ruby [0/4]
+
+    - [ ] enh-ruby-mode
+    - [ ] rbenv
+    - [ ] rubocop flychecking and autocorrect
+    - [ ] rspec-mode
+
+*** TODO Slim
+
+*** TODO Markdown
+
+*** TODO Dot
+
+** TODO Applications [0/5]
+
+*** TODO Undo tree
+
+*** TODO Dired [0/1]
+
+    - [ ] Add all-the-icons support
+
+*** TODO Dashboard
+
+*** TODO Neotree
+
+*** TODO Paradox package manager
+
